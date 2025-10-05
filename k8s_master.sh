@@ -20,6 +20,7 @@ sudo apt install -y containerd
 sudo mkdir -p /etc/containerd
 containerd config default | sudo tee /etc/containerd/config.toml >/dev/null
 sudo sed -i 's/SystemdCgroup = false/SystemdCgroup = true/' /etc/containerd/config.toml
+sudo sed -i 's|bin_dir = "/usr/lib/cni"|bin_dir = "/opt/cni/bin"|' /etc/containerd/config.toml
 sudo systemctl restart containerd
 sudo systemctl enable containerd
 
@@ -62,8 +63,6 @@ echo "[Master] Deploy Flannel network..."
 kubectl apply -f https://raw.githubusercontent.com/flannel-io/flannel/master/Documentation/kube-flannel.yml
 echo "Sleeping 10 sec to allow flannel plugins to be available prior to copying them to /usr/lib/cni. This is a workaround to allow coredns pods to be deployed successfully..."
 sleep 10
-sudo mkdir -p /usr/lib/cni
-sudo cp -r /opt/cni/bin/* /usr/lib/cni/
 
 echo "Optional commands post deployment..."
 kubectl get nodes
